@@ -5,5 +5,3 @@
 Python script to group a user's [`Discourse`](https://github.com/discourse/discourse) account based on their respective LDAP group memberships.
 
 Uses [`cshpy`](https://github.com/gambogi/cshpy) library by [@gambogi](https://github.com/gambogi)
-=======
-A script to place Discourse users into groups based on their respective LDAP account's group membership.
