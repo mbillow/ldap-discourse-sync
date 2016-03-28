@@ -81,6 +81,12 @@ class SyncUsers:
             'https://discourse.csh.rit.edu/admin/users/{id_num}/trust_level{api}'.format(id_num=member_id,
                                                                                          api=cred.API_INFO),
             trust_data, verify=False, headers=self.headers)
+        if self.discourse_group_name == 'eboard':
+            # Revoke User Moderation Privs
+            requests.put(
+                    'https://discourse.csh.rit.edu/admin/users/{id}/revoke_moderation{api}'.format(id=member_id,
+                                                                                                   api=cred.API_INFO),
+                    headers=self.headers, cookies=self.cookies, verify=False)
 
     def create_member(self, user_list):
         create_list_str = ""
@@ -97,7 +103,14 @@ class SyncUsers:
             cookies=self.cookies,
             verify=False
         )
-
+        if self.discourse_group_name == 'eboard':
+            # Grant User Moderation Privs
+            for new_member in user_list:
+                member_id = self.user_dict[new_member][0]
+                r = requests.put(
+                    'https://discourse.csh.rit.edu/admin/users/{id}/grant_moderation{api}'.format(id=member_id,
+                                                                                                  api=cred.API_INFO),
+                    headers=self.headers, cookies=self.cookies, verify=False)
 
 if __name__ == "__main__":
     SyncUsers('41', 'eboard').group_update()
