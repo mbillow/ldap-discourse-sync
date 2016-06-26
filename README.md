@@ -1,4 +1,4 @@
-# ldap-discourse-groups
+# ldap-discourse-sync
 #### Computer Science House @ RIT
 
 
