@@ -40,7 +40,6 @@ class SyncUsers:
         group_dict = {}
         for entry in users.json()["members"]:
             group_dict[entry["username"]] = entry["id"]
-        print group_dict
         return group_dict
 
     def group_update(self):
