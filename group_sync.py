@@ -1,7 +1,6 @@
 from csh import cshldap
 import requests
 import urllib
-import ssl
 import cred
 
 
@@ -41,6 +40,7 @@ class SyncUsers:
         group_dict = {}
         for entry in users.json()["members"]:
             group_dict[entry["username"]] = entry["id"]
+        print group_dict
         return group_dict
 
     def group_update(self):
@@ -112,9 +112,27 @@ class SyncUsers:
                                                                                                   api=cred.API_INFO),
                     headers=self.headers, cookies=self.cookies, verify=False)
 
+    def sync_birthdays(self):
+        request_url = "https://discourse.csh.rit.edu/users/{user}{api}"
+        for username in self.user_dict:
+            try:
+
+                date = self.ldap.member(username)['birthday'][0]
+                birthday = '-'.join([date[:4], date[4:6], date[6:]])[:10]
+                if birthday != "":
+                    data = {"custom_fields[date_of_birth]": birthday}
+                    r = requests.put(request_url.format(user=username, api=cred.API_INFO),
+                                     data=data, headers=self.headers, cookies=self.cookies, verify=False)
+            except KeyError:
+                pass
+            except TypeError:
+                pass
+
 if __name__ == "__main__":
     SyncUsers('41', 'eboard').group_update()
     SyncUsers('42', 'rtp').group_update()
     SyncUsers('43', 'drink').group_update()
     SyncUsers('44', 'intromembers').group_update()
     SyncUsers('45', 'webmasters', 'webmaster').group_update()
+    sync = SyncUsers()
+    sync.sync_birthdays()
